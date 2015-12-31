@@ -40,10 +40,14 @@ public class SpriteBatcher {
 	}
 
 	public void endBatch() {
+
 		vertices.setVertices(verticesBuffer, 0, bufferIndex);
-		vertices.bind();
-		vertices.draw(GL10.GL_TRIANGLES, 0, numSprites * 6);
-		vertices.unbind();
+
+		if (numSprites > 0) {
+			vertices.bind();
+			vertices.draw(GL10.GL_TRIANGLES, 0, numSprites * 6);
+			vertices.unbind();
+		}
 	}
 
 	public void drawSprite(float x, float y, float width, float height, TextureRegion region) {

@@ -38,6 +38,7 @@ public class Texture {
 
 		InputStream in = null;
 		try {
+
 			in = fileIO.readAsset(fileName);
 			Bitmap bitmap = BitmapFactory.decodeStream(in);
 			width = bitmap.getWidth();
@@ -46,9 +47,12 @@ public class Texture {
 			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
 			setFilters(GL10.GL_NEAREST, GL10.GL_NEAREST);
 			gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
+
 		} catch (IOException e) {
 			throw new RuntimeException("Couldn't load texture '" + fileName + "'", e);
+
 		} finally {
+
 			if (in != null)
 				try {
 					in.close();
