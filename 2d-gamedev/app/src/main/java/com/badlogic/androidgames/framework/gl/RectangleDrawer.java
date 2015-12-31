@@ -54,47 +54,35 @@ public class RectangleDrawer {
 
 	public void endBatch() {
 		vertices.setVertices(verticesBuffer, 0, bufferIndex);
-		vertices.bind();
 
-//		GL10 gl = glGraphics.getGL();
+		if (numRectangles > 0) {
+
+//			GL10 gl = glGraphics.getGL();
 //
-//		// Counter-clockwise winding.
-//		gl.glFrontFace(GL10.GL_CCW);
-//		// Enable face culling.
-//		gl.glEnable(GL10.GL_CULL_FACE);
-//		// What faces to remove with the face culling.
-//		gl.glCullFace(GL10.GL_BACK);
+//			// Counter-clockwise winding.
+//			gl.glFrontFace(GL10.GL_CCW);
+//			// Enable face culling.
+//			gl.glEnable(GL10.GL_CULL_FACE);
+//			// What faces to remove with the face culling.
+//			gl.glCullFace(GL10.GL_BACK);
 
-		vertices.draw(GL10.GL_TRIANGLES, 0, numRectangles * 6);
-		vertices.unbind();
+			vertices.bind();
+			vertices.draw(GL10.GL_TRIANGLES, 0, numRectangles * 6);
+			vertices.unbind();
 
-//		// Disable the vertices buffer.
-//		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-//		// Disable face culling.
-//		gl.glDisable(GL10.GL_CULL_FACE);
+//			// Disable the vertices buffer.
+//			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+//			// Disable face culling.
+//			gl.glDisable(GL10.GL_CULL_FACE);
+		}
 	}
 
 	public void drawRectangle(Rectangle rectangle) {
-		float halfWidth = rectangle.width / 2;
-		float halfHeight = rectangle.height / 2;
-		float x1 = rectangle.lowerLeft.x - halfWidth;
-		float y1 = rectangle.lowerLeft.y - halfHeight;
-		float x2 = rectangle.lowerLeft.x + halfWidth;
-		float y2 = rectangle.lowerLeft.y + halfHeight;
+		drawRectangle(rectangle.lowerLeft.x, rectangle.lowerLeft.y, rectangle.width, rectangle.height, .0f, .0f, .0f, .0f);
+	}
 
-		verticesBuffer[bufferIndex++] = x1;
-		verticesBuffer[bufferIndex++] = y1;
-
-		verticesBuffer[bufferIndex++] = x2;
-		verticesBuffer[bufferIndex++] = y1;
-
-		verticesBuffer[bufferIndex++] = x2;
-		verticesBuffer[bufferIndex++] = y2;
-
-		verticesBuffer[bufferIndex++] = x1;
-		verticesBuffer[bufferIndex++] = y2;
-
-		numRectangles++;
+	public void drawRectangle(float x, float y, float width, float height) {
+		drawRectangle(x, y, width, height, 0.0f, 0.0f, 0.0f, 0.0f);
 	}
 
 	public void drawRectangle(ColoredRectangle rectangle) {

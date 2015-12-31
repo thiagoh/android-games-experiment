@@ -33,6 +33,8 @@ public class SpriteBatcherTest extends GLGame {
 
 	class SpriteBatcherScreen extends Screen {
 
+		boolean debugCollisions = false;
+
 		final int NUM_TARGETS = 40;
 		final int NUM_BARS = 10;
 		final float WORLD_WIDTH = 9.6f;
@@ -95,7 +97,9 @@ public class SpriteBatcherTest extends GLGame {
 			}
 
 			spriteBatcher = new SpriteBatcher(glGraphics, 200);
-			rectangleBatcher = new RectangleDrawer(glGraphics, 200, true);
+			if (debugCollisions) {
+				rectangleBatcher = new RectangleDrawer(glGraphics, 200, true);
+			}
 			camera = new Camera2D(glGraphics, WORLD_WIDTH, WORLD_HEIGHT);
 			listener = new WorldListener() {
 
@@ -290,13 +294,16 @@ public class SpriteBatcherTest extends GLGame {
 
 			gl.glDisable(GL10.GL_TEXTURE_2D);
 
-			rectangleBatcher.beginBatch();
-			for (int i = 0, len = targets.size(); i < len; i++) {
-				Bob target = targets.get(i);
-				rectangleBatcher.drawRectangle(target.position.x, target.position.y, 0.5f * (target.direction == Bob.RIGHT ? 1 : -1), 0.5f,
-						1.0f, 0.0f, 0.0f, 1.0f);
+			if (debugCollisions) {
+				rectangleBatcher.beginBatch();
+				for (int i = 0, len = targets.size(); i < len; i++) {
+					Bob target = targets.get(i);
+					rectangleBatcher.drawRectangle(target.position.x, target.position.y,
+							target.bounds.width * (target.direction == Bob.RIGHT ? 1 : -1), target.bounds.height,
+							1.0f, 0.0f, 0.0f, 1.0f);
+				}
+				rectangleBatcher.endBatch();
 			}
-			rectangleBatcher.endBatch();
 		}
 
 		@Override
