@@ -21,6 +21,7 @@ import com.badlogic.androidgames.framework.math.OverlapTester;
 import com.badlogic.androidgames.framework.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -96,7 +97,7 @@ public class SpriteBatcherTest extends GLGame {
 				targets.add(target);
 			}
 
-			spriteBatcher = new SpriteBatcher(glGraphics, 200);
+			spriteBatcher = new SpriteBatcher(glGraphics, 200, true);
 			if (debugCollisions) {
 				rectangleBatcher = new RectangleDrawer(glGraphics, 200, true);
 			}
@@ -184,19 +185,27 @@ public class SpriteBatcherTest extends GLGame {
 				gameOverPlayed = true;
 			}
 
-			for (int i = 0, len = targets.size(); i < len; i++) {
+			for (Iterator<Bob> iterator = targets.iterator(); iterator.hasNext(); ) {
 
-				Bob target = targets.get(i);
+				Bob bob = iterator.next();
 
-				target.walkingTime += deltaTime;
+				bob.walkingTime += deltaTime;
 
-				if (target.walkingTime > 1.0f) {
-					target.walkingTime = 0;
-					target.direction = target.direction == Bob.RIGHT ? Bob.LEFT : Bob.RIGHT;
+				if (bob.walkingTime > 1.0f) {
+					bob.walkingTime = 0;
+					bob.direction = bob.direction == Bob.RIGHT ? Bob.LEFT : Bob.RIGHT;
 				}
 
-				target.position.add(deltaTime * target.velocity.x * (target.direction == Bob.RIGHT ? 1 : -1), deltaTime * target.velocity.y);
-				target.bounds.lowerLeft.add(deltaTime * target.velocity.x * (target.direction == Bob.RIGHT ? 1 : -1), deltaTime * target.velocity.y);
+				bob.position.add(deltaTime * bob.velocity.x * (bob.direction == Bob.RIGHT ? 1 : -1), deltaTime * bob.velocity.y);
+				bob.bounds.lowerLeft.add(deltaTime * bob.velocity.x * (bob.direction == Bob.RIGHT ? 1 : -1), deltaTime * bob.velocity.y);
+
+				if (bob.life == 0) {
+					if (bob.opacity <= 0) {
+						iterator.remove();
+					} else {
+						bob.opacity -= deltaTime / 0.2f;
+					}
+				}
 			}
 
 			for (int i = 0, len = touchEvents.size(); i < len; i++) {
@@ -239,6 +248,7 @@ public class SpriteBatcherTest extends GLGame {
 			ball.position.add(ball.velocity.x * deltaTime, ball.velocity.y * deltaTime);
 			ball.bounds.lowerLeft.add(ball.velocity.x * deltaTime, ball.velocity.y * deltaTime);
 
+
 			checkCollisions();
 
 //			if (ball.position.y > 0) {
@@ -259,7 +269,7 @@ public class SpriteBatcherTest extends GLGame {
 				GameObject collider = colliders.get(i);
 				if (OverlapTester.overlapRectangles(ball.bounds, collider.bounds)) {
 					grid.removeObject(collider);
-					targets.remove(collider);
+					collider.life = 0;
 					listener.hit();
 				}
 			}
@@ -283,13 +293,14 @@ public class SpriteBatcherTest extends GLGame {
 
 			for (int i = 0, len = targets.size(); i < len; i++) {
 				Bob target = targets.get(i);
-				spriteBatcher.drawSprite(target.position.x, target.position.y, 0.5f * (target.direction == Bob.RIGHT ? 1 : -1), 0.5f, bobRegion);
+				spriteBatcher.drawOpacitySprite(target.position.x, target.position.y, 0.5f * (target.direction == Bob.RIGHT ? 1 : -1), 0.5f,
+						target.opacity, bobRegion);
 			}
 
 			spriteBatcher.drawSprite(ball.position.x, ball.position.y, 0.2f, 0.2f, ballRegion);
 			spriteBatcher.drawLowerLeftSprite(emptyBar.position.x, emptyBar.position.y, 0.5f, 3.0f, emptyBarRegion);
 			spriteBatcher.drawLowerLeftSprite(fullBar.position.x, fullBar.position.y, 0.5f, fullBar.bounds.height, fullBarRegion);
-			spriteBatcher.drawSprite(cannon.position.x, cannon.position.y, 1, 0.5f, cannon.angle, cannonRegion);
+			spriteBatcher.drawAngledSprite(cannon.position.x, cannon.position.y, 1, 0.5f, cannon.angle, cannonRegion);
 			spriteBatcher.endBatch();
 
 			gl.glDisable(GL10.GL_TEXTURE_2D);

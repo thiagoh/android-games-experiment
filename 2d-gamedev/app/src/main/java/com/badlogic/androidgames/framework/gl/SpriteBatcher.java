@@ -9,15 +9,20 @@ import com.badlogic.androidgames.framework.math.Vector2;
 
 public class SpriteBatcher {
 	final float[] verticesBuffer;
+	final boolean opacity;
 	int bufferIndex;
 	final Vertices vertices;
 	int numSprites;
 
-	public SpriteBatcher(GLGraphics glGraphics, int maxSprites) {
-		this.verticesBuffer = new float[maxSprites * 4 * 4];
-		this.vertices = new Vertices(glGraphics, maxSprites * 4, maxSprites * 6, false, true);
+	public SpriteBatcher(GLGraphics glGraphics, int maxSprites, boolean opacity) {
+
+		int vertexSize = (2 + 4 + (opacity ? 4 : 0)) * 4;
+		// rectangles count * vertexes count * vertexSize
+		this.verticesBuffer = new float[maxSprites * vertexSize];
+		this.vertices = new Vertices(glGraphics, maxSprites * 4, maxSprites * 6, opacity, true);
 		this.bufferIndex = 0;
 		this.numSprites = 0;
+		this.opacity = opacity;
 
 		short[] indices = new short[maxSprites * 6];
 		int len = indices.length;
@@ -50,7 +55,76 @@ public class SpriteBatcher {
 		}
 	}
 
+	public void drawLowerLeftSprite(float x, float y, float width, float height, TextureRegion region) {
+		drawLowerLeftSprite(x, y, width, height, 1.0f, region);
+	}
+
+	public void drawLowerLeftSprite(float x, float y, float width, float height, float alpha, TextureRegion region) {
+		float x1 = x;
+		float y1 = y;
+		float x2 = x + width;
+		float y2 = y + height;
+
+		verticesBuffer[bufferIndex++] = x1;
+		verticesBuffer[bufferIndex++] = y1;
+
+		if (opacity) {
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = alpha;
+		}
+
+		verticesBuffer[bufferIndex++] = region.u1;
+		verticesBuffer[bufferIndex++] = region.v2;
+
+		verticesBuffer[bufferIndex++] = x2;
+		verticesBuffer[bufferIndex++] = y1;
+
+		if (opacity) {
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = alpha;
+		}
+
+		verticesBuffer[bufferIndex++] = region.u2;
+		verticesBuffer[bufferIndex++] = region.v2;
+
+		verticesBuffer[bufferIndex++] = x2;
+		verticesBuffer[bufferIndex++] = y2;
+
+		if (opacity) {
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = alpha;
+		}
+
+		verticesBuffer[bufferIndex++] = region.u2;
+		verticesBuffer[bufferIndex++] = region.v1;
+
+		verticesBuffer[bufferIndex++] = x1;
+		verticesBuffer[bufferIndex++] = y2;
+
+		if (opacity) {
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = alpha;
+		}
+
+		verticesBuffer[bufferIndex++] = region.u1;
+		verticesBuffer[bufferIndex++] = region.v1;
+
+		numSprites++;
+	}
+
 	public void drawSprite(float x, float y, float width, float height, TextureRegion region) {
+		drawOpacitySprite(x, y, width, height, 1.0f, region);
+	}
+
+	public void drawOpacitySprite(float x, float y, float width, float height, float alpha, TextureRegion region) {
 		float halfWidth = width / 2;
 		float halfHeight = height / 2;
 		float x1 = x - halfWidth;
@@ -60,57 +134,64 @@ public class SpriteBatcher {
 
 		verticesBuffer[bufferIndex++] = x1;
 		verticesBuffer[bufferIndex++] = y1;
+
+		if (opacity) {
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = alpha;
+		}
+
 		verticesBuffer[bufferIndex++] = region.u1;
 		verticesBuffer[bufferIndex++] = region.v2;
 
 		verticesBuffer[bufferIndex++] = x2;
 		verticesBuffer[bufferIndex++] = y1;
+
+		if (opacity) {
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = alpha;
+		}
+
 		verticesBuffer[bufferIndex++] = region.u2;
 		verticesBuffer[bufferIndex++] = region.v2;
 
 		verticesBuffer[bufferIndex++] = x2;
 		verticesBuffer[bufferIndex++] = y2;
+
+		if (opacity) {
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = alpha;
+		}
+
 		verticesBuffer[bufferIndex++] = region.u2;
 		verticesBuffer[bufferIndex++] = region.v1;
 
 		verticesBuffer[bufferIndex++] = x1;
 		verticesBuffer[bufferIndex++] = y2;
+
+		if (opacity) {
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = alpha;
+		}
+
 		verticesBuffer[bufferIndex++] = region.u1;
 		verticesBuffer[bufferIndex++] = region.v1;
 
 		numSprites++;
 	}
 
-	public void drawLowerLeftSprite(float x, float y, float width, float height, TextureRegion region) {
-		float x1 = x;
-		float y1 = y;
-		float x2 = x + width;
-		float y2 = y + height;
-
-		verticesBuffer[bufferIndex++] = x1;
-		verticesBuffer[bufferIndex++] = y1;
-		verticesBuffer[bufferIndex++] = region.u1;
-		verticesBuffer[bufferIndex++] = region.v2;
-
-		verticesBuffer[bufferIndex++] = x2;
-		verticesBuffer[bufferIndex++] = y1;
-		verticesBuffer[bufferIndex++] = region.u2;
-		verticesBuffer[bufferIndex++] = region.v2;
-
-		verticesBuffer[bufferIndex++] = x2;
-		verticesBuffer[bufferIndex++] = y2;
-		verticesBuffer[bufferIndex++] = region.u2;
-		verticesBuffer[bufferIndex++] = region.v1;
-
-		verticesBuffer[bufferIndex++] = x1;
-		verticesBuffer[bufferIndex++] = y2;
-		verticesBuffer[bufferIndex++] = region.u1;
-		verticesBuffer[bufferIndex++] = region.v1;
-
-		numSprites++;
+	public void drawAngledSprite(float x, float y, float width, float height, float angle, TextureRegion region) {
+		drawAngledOpaqueSprite(x, y, width, height, 0.0f, 1.0f, region);
 	}
 
-	public void drawSprite(float x, float y, float width, float height, float angle, TextureRegion region) {
+	public void drawAngledOpaqueSprite(float x, float y, float width, float height, float angle, float alpha, TextureRegion region) {
 		float halfWidth = width / 2;
 		float halfHeight = height / 2;
 
@@ -138,21 +219,53 @@ public class SpriteBatcher {
 
 		verticesBuffer[bufferIndex++] = x1;
 		verticesBuffer[bufferIndex++] = y1;
+
+		if (opacity) {
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = alpha;
+		}
+
 		verticesBuffer[bufferIndex++] = region.u1;
 		verticesBuffer[bufferIndex++] = region.v2;
 
 		verticesBuffer[bufferIndex++] = x2;
 		verticesBuffer[bufferIndex++] = y2;
+
+		if (opacity) {
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = alpha;
+		}
+
 		verticesBuffer[bufferIndex++] = region.u2;
 		verticesBuffer[bufferIndex++] = region.v2;
 
 		verticesBuffer[bufferIndex++] = x3;
 		verticesBuffer[bufferIndex++] = y3;
+
+		if (opacity) {
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = alpha;
+		}
+
 		verticesBuffer[bufferIndex++] = region.u2;
 		verticesBuffer[bufferIndex++] = region.v1;
 
 		verticesBuffer[bufferIndex++] = x4;
 		verticesBuffer[bufferIndex++] = y4;
+
+		if (opacity) {
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = 1.0f;
+			verticesBuffer[bufferIndex++] = alpha;
+		}
+
 		verticesBuffer[bufferIndex++] = region.u1;
 		verticesBuffer[bufferIndex++] = region.v1;
 
