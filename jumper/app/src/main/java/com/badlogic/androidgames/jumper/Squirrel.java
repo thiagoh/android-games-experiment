@@ -5,9 +5,9 @@ import com.badlogic.androidgames.framework.DynamicGameObject;
 public class Squirrel extends DynamicGameObject {
     public static final float SQUIRREL_WIDTH = 1;
     public static final float SQUIRREL_HEIGHT = 0.6f;
-    public static final float SQUIRREL_VELOCITY = 3f;
+    public static final float SQUIRREL_VELOCITY = 3.0f;
 
-    float stateTime = 0;
+    float stateTime = 0.0f;
 
     public Squirrel(float x, float y) {
         super(x, y, SQUIRREL_WIDTH, SQUIRREL_HEIGHT);
@@ -15,6 +15,7 @@ public class Squirrel extends DynamicGameObject {
     }
 
     public void update(float deltaTime) {
+
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         bounds.lowerLeft.set(position).sub(SQUIRREL_WIDTH / 2, SQUIRREL_HEIGHT / 2);
 
@@ -22,6 +23,7 @@ public class Squirrel extends DynamicGameObject {
             position.x = SQUIRREL_WIDTH / 2;
             velocity.x = SQUIRREL_VELOCITY;
         }
+
         if (position.x > World.WORLD_WIDTH - SQUIRREL_WIDTH / 2) {
             position.x = World.WORLD_WIDTH - SQUIRREL_WIDTH / 2;
             velocity.x = -SQUIRREL_VELOCITY;
