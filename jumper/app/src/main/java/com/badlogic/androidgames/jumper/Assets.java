@@ -19,6 +19,8 @@ public class Assets {
     public static TextureRegion gameOver;
     public static TextureRegion highScoresRegion;
     public static TextureRegion logo;
+    public static TextureRegion leftArrow;
+    public static TextureRegion rightArrow;
     public static TextureRegion soundOn;
     public static TextureRegion soundOff;
     public static TextureRegion arrow;
@@ -52,6 +54,8 @@ public class Assets {
         gameOver = new TextureRegion(items, 352, 256, 160, 96);
         highScoresRegion = new TextureRegion(Assets.items, 0, 257, 300, 110 / 3);
         logo = new TextureRegion(items, 0, 352, 274, 142);
+        leftArrow = new TextureRegion(items, 290, 387, 60, 59);
+        rightArrow = new TextureRegion(items, 354, 387, 60, 59);
         soundOff = new TextureRegion(items, 0, 0, 64, 64);
         soundOn = new TextureRegion(items, 64, 0, 64, 64);
         arrow = new TextureRegion(items, 0, 64, 64, 64);
@@ -86,9 +90,11 @@ public class Assets {
         music = game.getAudio().newMusic("music.mp3");
         music.setLooping(true);
         music.setVolume(0.5f);
+
         if (Settings.soundEnabled) {
             music.play();
         }
+
         jumpSound = game.getAudio().newSound("jump.ogg");
         highJumpSound = game.getAudio().newSound("highjump.ogg");
         hitSound = game.getAudio().newSound("hit.ogg");
@@ -97,14 +103,17 @@ public class Assets {
     }
 
     public static void reload() {
+
         background.reload();
         items.reload();
+
         if (Settings.soundEnabled) {
             music.play();
         }
     }
 
     public static void playSound(Sound sound) {
+
         if (Settings.soundEnabled) {
             sound.play(1);
         }

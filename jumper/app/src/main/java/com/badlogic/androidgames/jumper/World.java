@@ -54,7 +54,7 @@ public class World {
             Platform platform = new Platform(type, x, y);
             platforms.add(platform);
 
-            if (rand.nextFloat() > 0.0f && type != Platform.PLATFORM_TYPE_MOVING) {
+            if (rand.nextFloat() > 0.9f && type != Platform.PLATFORM_TYPE_MOVING) {
                 Spring spring = new Spring(platform.position.x, platform.position.y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
                 platform.spring = spring;
                 springs.add(spring);

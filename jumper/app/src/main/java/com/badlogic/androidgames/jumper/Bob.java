@@ -42,8 +42,7 @@ public class Bob extends DynamicGameObject {
 
         if (position.x < 0) {
             position.x = World.WORLD_WIDTH;
-        }
-        if (position.x > World.WORLD_WIDTH) {
+        } else if (position.x > World.WORLD_WIDTH) {
             position.x = 0;
         }
 
