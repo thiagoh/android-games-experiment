@@ -8,7 +8,7 @@ import com.badlogic.androidgames.framework.gl.SpriteBatcher;
 import com.badlogic.androidgames.framework.gl.TextureRegion;
 import com.badlogic.androidgames.framework.impl.GLGraphics;
 
-public class WorldRenderer {
+public class Renderer {
     static final float FRUSTUM_WIDTH = 10;
     static final float FRUSTUM_HEIGHT = 15;
     GLGraphics glGraphics;
@@ -16,7 +16,7 @@ public class WorldRenderer {
     Camera2D cam;
     SpriteBatcher batcher;
 
-    public WorldRenderer(GLGraphics glGraphics, SpriteBatcher batcher, World world) {
+    public Renderer(GLGraphics glGraphics, SpriteBatcher batcher, World world) {
         this.glGraphics = glGraphics;
         this.world = world;
         this.cam = new Camera2D(glGraphics, FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
@@ -34,8 +34,7 @@ public class WorldRenderer {
 
     public void renderBackground() {
         batcher.beginBatch(Assets.background);
-        batcher.drawSprite(cam.position.x, cam.position.y, FRUSTUM_WIDTH, FRUSTUM_HEIGHT,
-                Assets.backgroundRegion);
+        batcher.drawSprite(cam.position.x, cam.position.y, FRUSTUM_WIDTH, FRUSTUM_HEIGHT, Assets.backgroundRegion);
         batcher.endBatch();
     }
 
@@ -84,8 +83,7 @@ public class WorldRenderer {
                 keyFrame = Assets.brakingPlatform.getKeyFrame(platform.stateTime, Animation.ANIMATION_NONLOOPING);
             }
 
-            batcher.drawSprite(platform.position.x, platform.position.y,
-                    2, 0.5f, keyFrame);
+            batcher.drawSprite(platform.position.x, platform.position.y, 2, 0.5f, keyFrame);
         }
     }
 

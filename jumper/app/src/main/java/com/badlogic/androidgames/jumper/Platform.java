@@ -15,6 +15,7 @@ public class Platform extends DynamicGameObject {
     int type;
     int state;
     float stateTime;
+    Spring spring;
 
     public Platform(int type, float x, float y) {
         super(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT);

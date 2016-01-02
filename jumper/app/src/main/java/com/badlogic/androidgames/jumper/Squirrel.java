@@ -3,7 +3,7 @@ package com.badlogic.androidgames.jumper;
 import com.badlogic.androidgames.framework.DynamicGameObject;
 
 public class Squirrel extends DynamicGameObject {
-    public static final float SQUIRREL_WIDTH = 1;
+    public static final float SQUIRREL_WIDTH = 1.0f;
     public static final float SQUIRREL_HEIGHT = 0.6f;
     public static final float SQUIRREL_VELOCITY = 3.0f;
 
@@ -28,6 +28,7 @@ public class Squirrel extends DynamicGameObject {
             position.x = World.WORLD_WIDTH - SQUIRREL_WIDTH / 2;
             velocity.x = -SQUIRREL_VELOCITY;
         }
+
         stateTime += deltaTime;
     }
 }

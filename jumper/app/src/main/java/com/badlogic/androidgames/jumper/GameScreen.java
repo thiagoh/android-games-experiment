@@ -7,7 +7,6 @@ import javax.microedition.khronos.opengles.GL10;
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Input.TouchEvent;
 import com.badlogic.androidgames.framework.gl.Camera2D;
-import com.badlogic.androidgames.framework.gl.FPSCounter;
 import com.badlogic.androidgames.framework.gl.SpriteBatcher;
 import com.badlogic.androidgames.framework.impl.GLScreen;
 import com.badlogic.androidgames.framework.math.OverlapTester;
@@ -28,7 +27,7 @@ public class GameScreen extends GLScreen {
     SpriteBatcher batcher;
     World world;
     WorldListener worldListener;
-    WorldRenderer renderer;
+    Renderer renderer;
     Rectangle pauseBounds;
     Rectangle resumeBounds;
     Rectangle quitBounds;
@@ -59,7 +58,7 @@ public class GameScreen extends GLScreen {
             }
         };
         world = new World(worldListener);
-        renderer = new WorldRenderer(glGraphics, batcher, world);
+        renderer = new Renderer(glGraphics, batcher, world);
         pauseBounds = new Rectangle(320 - 64, 480 - 64, 64, 64);
         resumeBounds = new Rectangle(160 - 96, 240, 192, 36);
         quitBounds = new Rectangle(160 - 96, 240 - 36, 192, 36);
@@ -181,7 +180,7 @@ public class GameScreen extends GLScreen {
                 continue;
             }
             world = new World(worldListener);
-            renderer = new WorldRenderer(glGraphics, batcher, world);
+            renderer = new Renderer(glGraphics, batcher, world);
             world.score = lastScore;
             state = GAME_READY;
         }

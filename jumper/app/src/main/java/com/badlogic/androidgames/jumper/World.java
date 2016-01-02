@@ -54,8 +54,9 @@ public class World {
             Platform platform = new Platform(type, x, y);
             platforms.add(platform);
 
-            if (rand.nextFloat() > 0.9f && type != Platform.PLATFORM_TYPE_MOVING) {
+            if (rand.nextFloat() > 0.0f && type != Platform.PLATFORM_TYPE_MOVING) {
                 Spring spring = new Spring(platform.position.x, platform.position.y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
+                platform.spring = spring;
                 springs.add(spring);
             }
 
@@ -113,8 +114,10 @@ public class World {
             Platform platform = platforms.get(i);
             platform.update(deltaTime);
 
-            if (platform.state == Platform.PLATFORM_STATE_PULVERIZING
-                    && platform.stateTime > Platform.PLATFORM_PULVERIZE_TIME) {
+            if (platform.state == Platform.PLATFORM_STATE_PULVERIZING && platform.stateTime > Platform.PLATFORM_PULVERIZE_TIME) {
+                if (platform.spring != null) {
+                    springs.remove(platform.spring);
+                }
                 platforms.remove(platform);
                 len = platforms.size();
             }
